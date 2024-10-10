@@ -9,68 +9,84 @@ library(haven)
 library(psych)
 library(dplyr)
 library(ggplot2)
+library(tidyr)
+library(bruceR)
+library(ggsci)
+library(see)
 load("/Users/leolu/Documents/38964-0001-Data.rda")
 
 ```
 
 ```{r}
+mydataset <- da38964.0001 %>%
+  select(SAT1, SAT2, SAT3, SAT4, SAT5, EMP_1, EMP_2, EMP_OTHER_SELFEMP, SOCIAL_2, AGE, WORK_HRS, SLEEPHRS)
 
-summary(da38964.0001$SAT1)
+mydataset$SAT1 <- as.numeric(mydataset$SAT1)
 
-da38964.0001$SAT1 <- as.numeric(da38964.0001$SAT1)
+describe(mydataset$SAT1)
 
-describe(da38964.0001$SAT1)
-
-summary(da38964.0001$SAT1)
-
-da38964.0001 <- da38964.0001 %>%
+mydataset <- mydataset %>%
   filter(SAT1 < 6)
 
-summary(da38964.0001$SAT2)
+summary(mydataset$SAT1)
 
-da38964.0001$SAT2 <- as.numeric(da38964.0001$SAT2)
+mydataset$SAT2 <- as.numeric(mydataset$SAT2)
 
-describe(da38964.0001$SAT2)
+describe(mydataset$SAT2)
 
-summary(da38964.0001$SAT2)
-
-da38964.0001 <- da38964.0001 %>%
+mydataset <- mydataset %>%
   filter(SAT2 < 6)
 
-summary(da38964.0001$SAT3)
+summary(mydataset$SAT2)
 
-da38964.0001$SAT3 <- as.numeric(da38964.0001$SAT3)
+mydataset$SAT3 <- as.numeric(mydataset$SAT3)
 
-describe(da38964.0001$SAT3)
+describe(mydataset$SAT3)
 
-summary(da38964.0001$SAT3)
-
-da38964.0001 <- da38964.0001 %>%
+mydataset <- mydataset %>%
   filter(SAT3 < 6)
 
-summary(da38964.0001$SAT4)
+summary(mydataset$SAT3)
 
-da38964.0001$SAT4 <- as.numeric(da38964.0001$SAT4)
+mydataset$SAT4 <- as.numeric(mydataset$SAT4)
 
-describe(da38964.0001$SAT4)
+describe(mydataset$SAT4)
 
-summary(da38964.0001$SAT4)
-
-da38964.0001 <- da38964.0001 %>%
+mydataset <- mydataset %>%
   filter(SAT4 < 6)
 
-summary(da38964.0001$SAT5)
+summary(mydataset$SAT4)
 
-da38964.0001$SAT5 <- as.numeric(da38964.0001$SAT5)
+mydataset$SAT5 <- as.numeric(mydataset$SAT5)
 
-describe(da38964.0001$SAT5)
+describe(mydataset$SAT5)
 
-summary(da38964.0001$SAT5)
-
-da38964.0001 <- da38964.0001 %>%
+mydataset <- mydataset %>%
   filter(SAT5 < 6)
 
-
-
+summary(mydataset$SAT5)
 ```
+```{r}
+
+mydataset <- mydataset %>%
+  filter(EMP_1 != "(99) Refusal")
+mydataset <- mydataset %>%
+  mutate_at(c('EMP_1'),funs(str_replace(., "(00) Item not selected", "Not in One Job")))
+
+summary(mydataset$EMP_1)
+
+mydataset <- mydataset %>%
+  filter(EMP_2 != "(99) Refusal")
+
+mydataset<- mydataset%>%
+  mutate_at(c('EMP_2'),funs(str_replace(., "(00) Item not selected", "One Job")))
+
+summary(mydataset$EMP_2)
+
+mydataset <- mydataset %>%
+  filter(EMP_OTHER_SELFEMP != "(99) Refusal")
+
+summary(mydataset$EMP_OTHER_SELFEMP)
+```
+
 
