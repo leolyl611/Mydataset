@@ -1,0 +1,76 @@
+---
+title: "My dataset"
+author: "Leo Lu"
+date: "2024-10-10"
+output: "github_document"
+---
+```{r}
+library(haven)
+library(psych)
+library(dplyr)
+library(ggplot2)
+load("/Users/leolu/Documents/38964-0001-Data.rda")
+
+```
+
+```{r}
+
+summary(da38964.0001$SAT1)
+
+da38964.0001$SAT1 <- as.numeric(da38964.0001$SAT1)
+
+describe(da38964.0001$SAT1)
+
+summary(da38964.0001$SAT1)
+
+da38964.0001 <- da38964.0001 %>%
+  filter(SAT1 < 6)
+
+summary(da38964.0001$SAT2)
+
+da38964.0001$SAT2 <- as.numeric(da38964.0001$SAT2)
+
+describe(da38964.0001$SAT2)
+
+summary(da38964.0001$SAT2)
+
+da38964.0001 <- da38964.0001 %>%
+  filter(SAT2 < 6)
+
+summary(da38964.0001$SAT3)
+
+da38964.0001$SAT3 <- as.numeric(da38964.0001$SAT3)
+
+describe(da38964.0001$SAT3)
+
+summary(da38964.0001$SAT3)
+
+da38964.0001 <- da38964.0001 %>%
+  filter(SAT3 < 6)
+
+summary(da38964.0001$SAT4)
+
+da38964.0001$SAT4 <- as.numeric(da38964.0001$SAT4)
+
+describe(da38964.0001$SAT4)
+
+summary(da38964.0001$SAT4)
+
+da38964.0001 <- da38964.0001 %>%
+  filter(SAT4 < 6)
+
+summary(da38964.0001$SAT5)
+
+da38964.0001$SAT5 <- as.numeric(da38964.0001$SAT5)
+
+describe(da38964.0001$SAT5)
+
+summary(da38964.0001$SAT5)
+
+da38964.0001 <- da38964.0001 %>%
+  filter(SAT5 < 6)
+
+
+
+```
+
