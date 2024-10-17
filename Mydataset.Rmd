@@ -65,28 +65,51 @@ mydataset <- mydataset %>%
   filter(SAT5 < 6)
 
 summary(mydataset$SAT5)
+
+describe(mydataset$SAT5)
+
 ```
 ```{r}
 
 mydataset <- mydataset %>%
   filter(EMP_1 != "(99) Refusal")
+
 mydataset <- mydataset %>%
   mutate_at(c('EMP_1'),funs(str_replace(., "(00) Item not selected", "Not in One Job")))
+mydataset <- mydataset %>%  
+  mutate_at(c('EMP_1'),funs(str_replace(., "(01) Item selected", "One Job")))
 
-summary(mydataset$EMP_1)
+  summary(mydataset$EMP_1)
 
 mydataset <- mydataset %>%
   filter(EMP_2 != "(99) Refusal")
 
 mydataset<- mydataset%>%
-  mutate_at(c('EMP_2'),funs(str_replace(., "(00) Item not selected", "One Job")))
+  mutate_at(c('EMP_2'),funs(str_replace(., "(00) Item not selected", "Not in Multiple Jobs")))
+
+mydataset<- mydataset%>%
+  mutate_at(c('EMP_2'),funs(str_replace(., "(01) Item selected", "Multiple Jobs")))
+
 
 summary(mydataset$EMP_2)
 
 mydataset <- mydataset %>%
   filter(EMP_OTHER_SELFEMP != "(99) Refusal")
 
+mydataset <- mydataset %>%
+  mutate_at(c('EMP_OTHER_SELFEMP'),funs(str_replace(., "(00) Item not selected", "Not self employed")))
+
+mydataset <- mydataset %>%
+  mutate_at(c('EMP_OTHER_SELFEMP'),funs(str_replace(., "(01) Item selected", "Self employed")))
+  
 summary(mydataset$EMP_OTHER_SELFEMP)
 ```
+```{r}
+
+
+
+
+```
+
 
 

@@ -186,8 +186,16 @@ summary(mydataset$SAT5)
     ##   1.000   2.000   3.000   2.721   4.000   5.000
 
 ``` r
+describe(mydataset$SAT5)
+```
+
+    ##    vars    n mean   sd median trimmed  mad min max range skew kurtosis   se
+    ## X1    1 7637 2.72 1.33      3    2.65 1.48   1   5     4 0.25    -1.14 0.02
+
+``` r
 mydataset <- mydataset %>%
   filter(EMP_1 != "(99) Refusal")
+
 mydataset <- mydataset %>%
   mutate_at(c('EMP_1'),funs(str_replace(., "(00) Item not selected", "Not in One Job")))
 ```
@@ -204,7 +212,23 @@ mydataset <- mydataset %>%
     ## generated.
 
 ``` r
-summary(mydataset$EMP_1)
+mydataset <- mydataset %>%  
+  mutate_at(c('EMP_1'),funs(str_replace(., "(01) Item selected", "One Job")))
+```
+
+    ## Warning: `funs()` was deprecated in dplyr 0.8.0.
+    ## ℹ Please use a list of either functions or lambdas:
+    ## 
+    ## # Simple named list: list(mean = mean, median = median)
+    ## 
+    ## # Auto named with `tibble::lst()`: tibble::lst(mean, median)
+    ## 
+    ## # Using lambdas list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+``` r
+  summary(mydataset$EMP_1)
 ```
 
     ##    Length     Class      Mode 
@@ -215,7 +239,23 @@ mydataset <- mydataset %>%
   filter(EMP_2 != "(99) Refusal")
 
 mydataset<- mydataset%>%
-  mutate_at(c('EMP_2'),funs(str_replace(., "(00) Item not selected", "One Job")))
+  mutate_at(c('EMP_2'),funs(str_replace(., "(00) Item not selected", "Not in Multiple Jobs")))
+```
+
+    ## Warning: `funs()` was deprecated in dplyr 0.8.0.
+    ## ℹ Please use a list of either functions or lambdas:
+    ## 
+    ## # Simple named list: list(mean = mean, median = median)
+    ## 
+    ## # Auto named with `tibble::lst()`: tibble::lst(mean, median)
+    ## 
+    ## # Using lambdas list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+``` r
+mydataset<- mydataset%>%
+  mutate_at(c('EMP_2'),funs(str_replace(., "(01) Item selected", "Multiple Jobs")))
 ```
 
     ## Warning: `funs()` was deprecated in dplyr 0.8.0.
@@ -240,8 +280,40 @@ summary(mydataset$EMP_2)
 mydataset <- mydataset %>%
   filter(EMP_OTHER_SELFEMP != "(99) Refusal")
 
+mydataset <- mydataset %>%
+  mutate_at(c('EMP_OTHER_SELFEMP'),funs(str_replace(., "(00) Item not selected", "Not self employed")))
+```
+
+    ## Warning: `funs()` was deprecated in dplyr 0.8.0.
+    ## ℹ Please use a list of either functions or lambdas:
+    ## 
+    ## # Simple named list: list(mean = mean, median = median)
+    ## 
+    ## # Auto named with `tibble::lst()`: tibble::lst(mean, median)
+    ## 
+    ## # Using lambdas list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+``` r
+mydataset <- mydataset %>%
+  mutate_at(c('EMP_OTHER_SELFEMP'),funs(str_replace(., "(01) Item selected", "Self employed")))
+```
+
+    ## Warning: `funs()` was deprecated in dplyr 0.8.0.
+    ## ℹ Please use a list of either functions or lambdas:
+    ## 
+    ## # Simple named list: list(mean = mean, median = median)
+    ## 
+    ## # Auto named with `tibble::lst()`: tibble::lst(mean, median)
+    ## 
+    ## # Using lambdas list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+``` r
 summary(mydataset$EMP_OTHER_SELFEMP)
 ```
 
-    ## (00) Item not selected     (01) Item selected           (99) Refusal 
-    ##                   7500                    136                      0
+    ##    Length     Class      Mode 
+    ##      7636 character character
