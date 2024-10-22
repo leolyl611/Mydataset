@@ -13,6 +13,9 @@ library(tidyr)
 library(bruceR)
 library(ggsci)
 library(see)
+library(car)
+
+
 load("/Users/leolu/Documents/38964-0001-Data.rda")
 
 ```
@@ -68,6 +71,19 @@ summary(mydataset$SAT5)
 
 describe(mydataset$SAT5)
 
+mydataset$SOCIAL_2 <- as.numeric(mydataset$SOCIAL_2)
+
+describe(mydataset$SOCIAL_2)
+
+mydataset <- mydataset %>%
+  filter(SOCIAL_2 < 6)
+
+summary(mydataset$SOCIAL_2)
+
+describe(mydataset$SOCIAL_2)
+
+
+
 ```
 ```{r}
 
@@ -106,8 +122,26 @@ summary(mydataset$EMP_OTHER_SELFEMP)
 ```
 ```{r}
 
+mydataset <- mydataset %>%
+  mutate(SOCIAL = rowMeans(cbind(SOCIAL_2)))
 
+mydataset$SOCIAL_log <- log10(mydataset$SOCIAL)
 
+ggplot(mydataset, aes(x = SOCIAL_log)) + geom_histogram(binwidth = 0.25) + theme_classic()
+
+ggplot(mydataset, aes(x = SOCIAL_log)) + geom_density(adjust = 2)  + theme_classic()
+
+qq<-ggplot(mydataset, aes(sample = SOCIAL_log)) + geom_qq()  + theme_classic()
+
+qq+ geom_qq_line()
+
+mydataset %>%
+  group_by(SOCIAL_log) %>%
+  dplyr::summarize(mean_SOCIAL_log    = mean(SOCIAL_log),
+      std_dev_SOCIAL_log = sd(SOCIAL_log),
+    )
+
+describe(mydataset$SOCIAL_log)
 
 ```
 

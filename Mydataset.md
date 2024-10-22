@@ -84,6 +84,23 @@ library(see)
     ##     scale_color_material, scale_colour_material, scale_fill_material
 
 ``` r
+library(car)
+```
+
+    ## Loading required package: carData
+
+    ## 
+    ## Attaching package: 'car'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     recode
+
+    ## The following object is masked from 'package:psych':
+    ## 
+    ##     logit
+
+``` r
 load("/Users/leolu/Documents/38964-0001-Data.rda")
 ```
 
@@ -193,6 +210,32 @@ describe(mydataset$SAT5)
     ## X1    1 7637 2.72 1.33      3    2.65 1.48   1   5     4 0.25    -1.14 0.02
 
 ``` r
+mydataset$SOCIAL_2 <- as.numeric(mydataset$SOCIAL_2)
+
+describe(mydataset$SOCIAL_2)
+```
+
+    ##    vars    n mean  sd median trimmed  mad min max range skew kurtosis   se
+    ## X1    1 7637 2.56 1.2      3    2.49 1.48   1   7     6 0.35    -0.73 0.01
+
+``` r
+mydataset <- mydataset %>%
+  filter(SOCIAL_2 < 6)
+
+summary(mydataset$SOCIAL_2)
+```
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   1.000   2.000   3.000   2.563   3.000   5.000
+
+``` r
+describe(mydataset$SOCIAL_2)
+```
+
+    ##    vars    n mean  sd median trimmed  mad min max range skew kurtosis   se
+    ## X1    1 7636 2.56 1.2      3    2.49 1.48   1   5     4 0.34    -0.75 0.01
+
+``` r
 mydataset <- mydataset %>%
   filter(EMP_1 != "(99) Refusal")
 
@@ -232,7 +275,7 @@ mydataset <- mydataset %>%
 ```
 
     ##    Length     Class      Mode 
-    ##      7636 character character
+    ##      7635 character character
 
 ``` r
 mydataset <- mydataset %>%
@@ -274,7 +317,7 @@ summary(mydataset$EMP_2)
 ```
 
     ##    Length     Class      Mode 
-    ##      7636 character character
+    ##      7635 character character
 
 ``` r
 mydataset <- mydataset %>%
@@ -316,4 +359,53 @@ summary(mydataset$EMP_OTHER_SELFEMP)
 ```
 
     ##    Length     Class      Mode 
-    ##      7636 character character
+    ##      7635 character character
+
+``` r
+mydataset <- mydataset %>%
+  mutate(SOCIAL = rowMeans(cbind(SOCIAL_2)))
+
+mydataset$SOCIAL_log <- log10(mydataset$SOCIAL)
+
+ggplot(mydataset, aes(x = SOCIAL_log)) + geom_histogram(binwidth = 0.25) + theme_classic()
+```
+
+![](Mydataset_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+``` r
+ggplot(mydataset, aes(x = SOCIAL_log)) + geom_density(adjust = 2)  + theme_classic()
+```
+
+![](Mydataset_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+
+``` r
+qq<-ggplot(mydataset, aes(sample = SOCIAL_log)) + geom_qq()  + theme_classic()
+
+qq+ geom_qq_line()
+```
+
+![](Mydataset_files/figure-gfm/unnamed-chunk-4-3.png)<!-- -->
+
+``` r
+mydataset %>%
+  group_by(SOCIAL_log) %>%
+  dplyr::summarize(mean_SOCIAL_log    = mean(SOCIAL_log),
+      std_dev_SOCIAL_log = sd(SOCIAL_log),
+    )
+```
+
+    ## # A tibble: 5 × 3
+    ##   SOCIAL_log mean_SOCIAL_log std_dev_SOCIAL_log
+    ##        <dbl>           <dbl>              <dbl>
+    ## 1      0               0                      0
+    ## 2      0.301           0.301                  0
+    ## 3      0.477           0.477                  0
+    ## 4      0.602           0.602                  0
+    ## 5      0.699           0.699                  0
+
+``` r
+describe(mydataset$SOCIAL_log)
+```
+
+    ##    vars    n mean   sd median trimmed  mad min max range  skew kurtosis se
+    ## X1    1 7635 0.35 0.23   0.48    0.36 0.26   0 0.7   0.7 -0.39    -1.01  0
