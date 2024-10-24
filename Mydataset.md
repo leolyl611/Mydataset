@@ -111,11 +111,7 @@ library(ggstatsplot)
 ``` r
 library(performance)
 library(sjPlot)
-```
 
-    ## Install package "strengejacke" from GitHub (`devtools::install_github("strengejacke/strengejacke")`) to load all sj-packages at once!
-
-``` r
 load("/Users/leolu/Documents/38964-0001-Data.rda")
 ```
 
@@ -286,21 +282,40 @@ describe(mydataset$HAPPY)
     ## X1    1 7637 1.98 0.73      2    1.94   0   1   4     3 0.45     0.06 0.01
 
 ``` r
-mydataset <- mydataset %>%
-  filter(HAPPY < 5)
+mydataset %>% count(HAPPY)
+```
 
-summary(mydataset$HAPPY)
+    ##   HAPPY    n
+    ## 1     1 1912
+    ## 2     2 4175
+    ## 3     3 1342
+    ## 4     4  208
+
+``` r
+mydataset$HAPPY_R <- 5 - mydataset$HAPPY
+
+mydataset %>% count(HAPPY_R)
+```
+
+    ##   HAPPY_R    n
+    ## 1       1  208
+    ## 2       2 1342
+    ## 3       3 4175
+    ## 4       4 1912
+
+``` r
+summary(mydataset$HAPPY_R)
 ```
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##    1.00    1.00    2.00    1.98    2.00    4.00
+    ##    1.00    3.00    3.00    3.02    4.00    4.00
 
 ``` r
-describe(mydataset$HAPPY)
+describe(mydataset$HAPPY_R)
 ```
 
-    ##    vars    n mean   sd median trimmed mad min max range skew kurtosis   se
-    ## X1    1 7637 1.98 0.73      2    1.94   0   1   4     3 0.45     0.06 0.01
+    ##    vars    n mean   sd median trimmed mad min max range  skew kurtosis   se
+    ## X1    1 7637 3.02 0.73      3    3.06   0   1   4     3 -0.45     0.06 0.01
 
 ``` r
 mydataset <- mydataset %>%
@@ -387,124 +402,7 @@ summary(mydataset$EMP_2)
     ##      7636 character character
 
 ``` r
-Corr(mydataset)
-```
-
-    ## Warning in Corr(mydataset): NAs introduced by coercion
-    ## Warning in Corr(mydataset): NAs introduced by coercion
-
-    ## Warning in sqrt(n - 2): NaNs produced
-
-    ## Warning in psych::corr.test(data.new, method = method, adjust = p.adjust, :
-    ## Number of subjects must be greater than 3 to find confidence intervals.
-
-    ## Warning in sqrt(n[lower.tri(n)] - 3): NaNs produced
-
-    ## NOTE: `EMP_1`, `EMP_2`, `WORK_HRS` transformed to numeric.
-    ## 
-    ## Pearson's r and 95% confidence intervals:
-    ## ──────────────────────────────────────────────────────
-    ##                        r       [95% CI]     p        N
-    ## ──────────────────────────────────────────────────────
-    ## SAT1-SAT2           0.69 [ 0.68,  0.70] <.001 *** 7636
-    ## SAT1-SAT3           0.68 [ 0.67,  0.69] <.001 *** 7636
-    ## SAT1-SAT4           0.56 [ 0.55,  0.58] <.001 *** 7636
-    ## SAT1-SAT5           0.45 [ 0.44,  0.47] <.001 *** 7636
-    ## SAT1-EMP_1               [   NA,    NA]              0
-    ## SAT1-EMP_2               [   NA,    NA]              0
-    ## SAT1-HAPPY         -0.52 [-0.54, -0.51] <.001 *** 7636
-    ## SAT1-SOCIAL_2      -0.20 [-0.22, -0.18] <.001 *** 7636
-    ## SAT1-AGE            0.03 [ 0.01,  0.05]  .010 *   7636
-    ## SAT1-WORK_HRS      -0.08 [-0.10, -0.05] <.001 *** 7636
-    ## SAT1-SLEEPHRS       0.02 [-0.01,  0.04]  .138     7636
-    ## SAT1-SAT            0.83 [ 0.83,  0.84] <.001 *** 7636
-    ## SAT1-SOCIAL_R       0.20 [ 0.18,  0.22] <.001 *** 7636
-    ## SAT2-SAT3           0.70 [ 0.69,  0.71] <.001 *** 7636
-    ## SAT2-SAT4           0.55 [ 0.53,  0.56] <.001 *** 7636
-    ## SAT2-SAT5           0.45 [ 0.43,  0.47] <.001 *** 7636
-    ## SAT2-EMP_1               [   NA,    NA]              0
-    ## SAT2-EMP_2               [   NA,    NA]              0
-    ## SAT2-HAPPY         -0.53 [-0.55, -0.52] <.001 *** 7636
-    ## SAT2-SOCIAL_2      -0.23 [-0.25, -0.21] <.001 *** 7636
-    ## SAT2-AGE           -0.04 [-0.06, -0.02] <.001 *** 7636
-    ## SAT2-WORK_HRS      -0.09 [-0.11, -0.07] <.001 *** 7636
-    ## SAT2-SLEEPHRS       0.01 [-0.01,  0.04]  .263     7636
-    ## SAT2-SAT            0.83 [ 0.83,  0.84] <.001 *** 7636
-    ## SAT2-SOCIAL_R       0.23 [ 0.21,  0.25] <.001 *** 7636
-    ## SAT3-SAT4           0.63 [ 0.62,  0.65] <.001 *** 7636
-    ## SAT3-SAT5           0.48 [ 0.47,  0.50] <.001 *** 7636
-    ## SAT3-EMP_1               [   NA,    NA]              0
-    ## SAT3-EMP_2               [   NA,    NA]              0
-    ## SAT3-HAPPY         -0.58 [-0.60, -0.57] <.001 *** 7636
-    ## SAT3-SOCIAL_2      -0.25 [-0.27, -0.23] <.001 *** 7636
-    ## SAT3-AGE            0.03 [ 0.00,  0.05]  .017 *   7636
-    ## SAT3-WORK_HRS      -0.09 [-0.11, -0.07] <.001 *** 7636
-    ## SAT3-SLEEPHRS       0.02 [-0.01,  0.04]  .161     7636
-    ## SAT3-SAT            0.87 [ 0.86,  0.87] <.001 *** 7636
-    ## SAT3-SOCIAL_R       0.25 [ 0.23,  0.27] <.001 *** 7636
-    ## SAT4-SAT5           0.45 [ 0.43,  0.46] <.001 *** 7636
-    ## SAT4-EMP_1               [   NA,    NA]              0
-    ## SAT4-EMP_2               [   NA,    NA]              0
-    ## SAT4-HAPPY         -0.44 [-0.46, -0.42] <.001 *** 7636
-    ## SAT4-SOCIAL_2      -0.20 [-0.22, -0.18] <.001 *** 7636
-    ## SAT4-AGE            0.07 [ 0.05,  0.10] <.001 *** 7636
-    ## SAT4-WORK_HRS      -0.06 [-0.08, -0.03] <.001 *** 7636
-    ## SAT4-SLEEPHRS       0.01 [-0.02,  0.03]  .621     7636
-    ## SAT4-SAT            0.79 [ 0.78,  0.80] <.001 *** 7636
-    ## SAT4-SOCIAL_R       0.20 [ 0.18,  0.22] <.001 *** 7636
-    ## SAT5-EMP_1               [   NA,    NA]              0
-    ## SAT5-EMP_2               [   NA,    NA]              0
-    ## SAT5-HAPPY         -0.38 [-0.40, -0.36] <.001 *** 7636
-    ## SAT5-SOCIAL_2      -0.14 [-0.16, -0.12] <.001 *** 7636
-    ## SAT5-AGE           -0.00 [-0.03,  0.02]  .765     7636
-    ## SAT5-WORK_HRS      -0.04 [-0.06, -0.01]  .001 **  7636
-    ## SAT5-SLEEPHRS       0.04 [ 0.01,  0.06]  .001 **  7636
-    ## SAT5-SAT            0.71 [ 0.70,  0.73] <.001 *** 7636
-    ## SAT5-SOCIAL_R       0.14 [ 0.12,  0.16] <.001 *** 7636
-    ## EMP_1-EMP_2              [   NA,    NA]              0
-    ## EMP_1-HAPPY              [   NA,    NA]              0
-    ## EMP_1-SOCIAL_2           [   NA,    NA]              0
-    ## EMP_1-AGE                [   NA,    NA]              0
-    ## EMP_1-WORK_HRS           [   NA,    NA]              0
-    ## EMP_1-SLEEPHRS           [   NA,    NA]              0
-    ## EMP_1-SAT                [   NA,    NA]              0
-    ## EMP_1-SOCIAL_R           [   NA,    NA]              0
-    ## EMP_2-HAPPY              [   NA,    NA]              0
-    ## EMP_2-SOCIAL_2           [   NA,    NA]              0
-    ## EMP_2-AGE                [   NA,    NA]              0
-    ## EMP_2-WORK_HRS           [   NA,    NA]              0
-    ## EMP_2-SLEEPHRS           [   NA,    NA]              0
-    ## EMP_2-SAT                [   NA,    NA]              0
-    ## EMP_2-SOCIAL_R           [   NA,    NA]              0
-    ## HAPPY-SOCIAL_2      0.23 [ 0.21,  0.25] <.001 *** 7636
-    ## HAPPY-AGE           0.02 [-0.01,  0.04]  .163     7636
-    ## HAPPY-WORK_HRS      0.08 [ 0.05,  0.10] <.001 *** 7636
-    ## HAPPY-SLEEPHRS     -0.03 [-0.06, -0.01]  .004 **  7636
-    ## HAPPY-SAT          -0.61 [-0.62, -0.59] <.001 *** 7636
-    ## HAPPY-SOCIAL_R     -0.23 [-0.25, -0.21] <.001 *** 7636
-    ## SOCIAL_2-AGE        0.08 [ 0.06,  0.11] <.001 *** 7636
-    ## SOCIAL_2-WORK_HRS   0.09 [ 0.07,  0.11] <.001 *** 7636
-    ## SOCIAL_2-SLEEPHRS   0.01 [-0.01,  0.04]  .197     7636
-    ## SOCIAL_2-SAT       -0.25 [-0.27, -0.23] <.001 *** 7636
-    ## SOCIAL_2-SOCIAL_R  -1.00 [-1.00, -1.00] <.001 *** 7636
-    ## AGE-WORK_HRS        0.15 [ 0.13,  0.17] <.001 *** 7636
-    ## AGE-SLEEPHRS       -0.02 [-0.05, -0.00]  .034 *   7636
-    ## AGE-SAT             0.02 [-0.00,  0.04]  .058 .   7636
-    ## AGE-SOCIAL_R       -0.08 [-0.11, -0.06] <.001 *** 7636
-    ## WORK_HRS-SLEEPHRS   0.02 [-0.00,  0.04]  .121     7636
-    ## WORK_HRS-SAT       -0.09 [-0.11, -0.06] <.001 *** 7636
-    ## WORK_HRS-SOCIAL_R  -0.09 [-0.11, -0.07] <.001 *** 7636
-    ## SLEEPHRS-SAT        0.02 [ 0.00,  0.04]  .049 *   7636
-    ## SLEEPHRS-SOCIAL_R  -0.01 [-0.04,  0.01]  .197     7636
-    ## SAT-SOCIAL_R        0.25 [ 0.23,  0.27] <.001 *** 7636
-    ## ──────────────────────────────────────────────────────
-
-![](Mydataset_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
-
-    ## Correlation matrix is displayed in the RStudio `Plots` Pane.
-
-``` r
-mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "yes", "no")
+mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
 
 model<-lm(SAT ~ SOCIAL_R + Employed, data = mydataset)
 
@@ -521,7 +419,7 @@ performance(model)
 check_model(model)
 ```
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+![](Mydataset_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 model_summary(model)
@@ -537,7 +435,7 @@ model_summary(model)
     ##                (0.026)   
     ## SOCIAL_R        0.197 ***
     ##                (0.009)   
-    ## Employedyes     0.193 ***
+    ## Employed1       0.193 ***
     ##                (0.022)   
     ## ─────────────────────────
     ## R^2             0.072    
@@ -611,7 +509,7 @@ SOCIAL R
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
-Employed \[yes\]
+Employed \[1\]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.19
@@ -645,9 +543,209 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1.5, dot.size = 2.5, colors = "blue") + theme_bruce()
 ```
 
+![](Mydataset_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+
+``` r
+ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_smooth(method = lm) + theme_bruce()
+```
+
+    ## `geom_smooth()` using formula = 'y ~ x'
+
 ![](Mydataset_files/figure-gfm/unnamed-chunk-4-3.png)<!-- -->
 
 ``` r
 #Higher score of social interaction means more Social interaction, Employed yes means employed.
-#7.1 % of the variability is explained by the whole model.One unit increase in Social interaction frequency means a 0.197 increase in Satisfaction With life. Being employed means a 0.194 increase in satisfaction with life.
+#7.1 % of the variability is explained by the whole model. One unit increase in Social interaction frequency means a 0.197 increase in Satisfaction With life. Being employed means a 0.194 increase in satisfaction with life.
 ```
+
+``` r
+mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
+
+model<-lm(HAPPY_R ~ SOCIAL_R + Employed, data = mydataset)
+
+performance(model)
+```
+
+    ## # Indices of model performance
+    ## 
+    ## AIC       |      AICc |       BIC |    R2 | R2 (adj.) |  RMSE | Sigma
+    ## ---------------------------------------------------------------------
+    ## 16430.390 | 16430.396 | 16458.153 | 0.059 |     0.059 | 0.709 | 0.709
+
+``` r
+check_model(model)
+```
+
+![](Mydataset_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+model_summary(model)
+```
+
+    ## 
+    ## Model Summary
+    ## 
+    ## ─────────────────────────
+    ##              (1) HAPPY_R 
+    ## ─────────────────────────
+    ## (Intercept)     2.633 ***
+    ##                (0.019)   
+    ## SOCIAL_R        0.134 ***
+    ##                (0.007)   
+    ## Employed1       0.118 ***
+    ##                (0.016)   
+    ## ─────────────────────────
+    ## R^2             0.059    
+    ## Adj. R^2        0.059    
+    ## Num. obs.    7636        
+    ## ─────────────────────────
+    ## Note. * p < .05, ** p < .01, *** p < .001.
+    ## 
+    ## # Check for Multicollinearity
+    ## 
+    ## Low Correlation
+    ## 
+    ##      Term  VIF   VIF 95% CI Increased SE Tolerance Tolerance 95% CI
+    ##  SOCIAL_R 1.01 [1.00, 1.08]         1.01      0.99     [0.93, 1.00]
+    ##  Employed 1.01 [1.00, 1.08]         1.01      0.99     [0.93, 1.00]
+
+``` r
+tab_model(model)
+```
+
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+HAPPY_R
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.63
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.60 – 2.67
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>\<0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+SOCIAL R
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.13
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.12 – 0.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>\<0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+Employed \[1\]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.12
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.09 – 0.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>\<0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
+7636
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+0.059 / 0.059
+</td>
+</tr>
+</table>
+
+``` r
+plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1.5, dot.size = 2.5, colors = "blue") + theme_bruce()
+```
+
+![](Mydataset_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+
+``` r
+ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = HAPPY_R)) + geom_point() + geom_smooth(method = lm) + theme_bruce()
+```
+
+    ## `geom_smooth()` using formula = 'y ~ x'
+
+![](Mydataset_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
+
+``` r
+corrdataset <- mydataset %>%
+  select(SAT, Employed, HAPPY_R, SOCIAL_R, AGE, WORK_HRS, SLEEPHRS,)
+
+Corr(corrdataset)
+```
+
+    ## NOTE: `Employed`, `WORK_HRS` transformed to numeric.
+    ## 
+    ## Pearson's r and 95% confidence intervals:
+    ## ──────────────────────────────────────────────────────
+    ##                        r       [95% CI]     p        N
+    ## ──────────────────────────────────────────────────────
+    ## SAT-Employed        0.12 [ 0.10,  0.15] <.001 *** 7636
+    ## SAT-HAPPY_R         0.61 [ 0.59,  0.62] <.001 *** 7636
+    ## SAT-SOCIAL_R        0.25 [ 0.23,  0.27] <.001 *** 7636
+    ## SAT-AGE             0.02 [-0.00,  0.04]  .058 .   7636
+    ## SAT-WORK_HRS       -0.09 [-0.11, -0.06] <.001 *** 7636
+    ## SAT-SLEEPHRS        0.02 [ 0.00,  0.04]  .049 *   7636
+    ## Employed-HAPPY_R    0.11 [ 0.08,  0.13] <.001 *** 7636
+    ## Employed-SOCIAL_R   0.11 [ 0.09,  0.13] <.001 *** 7636
+    ## Employed-AGE       -0.13 [-0.15, -0.11] <.001 *** 7636
+    ## Employed-WORK_HRS  -0.88 [-0.88, -0.87] <.001 *** 7636
+    ## Employed-SLEEPHRS  -0.03 [-0.05, -0.01]  .006 **  7636
+    ## HAPPY_R-SOCIAL_R    0.23 [ 0.21,  0.25] <.001 *** 7636
+    ## HAPPY_R-AGE        -0.02 [-0.04,  0.01]  .163     7636
+    ## HAPPY_R-WORK_HRS   -0.08 [-0.10, -0.05] <.001 *** 7636
+    ## HAPPY_R-SLEEPHRS    0.03 [ 0.01,  0.06]  .004 **  7636
+    ## SOCIAL_R-AGE       -0.08 [-0.11, -0.06] <.001 *** 7636
+    ## SOCIAL_R-WORK_HRS  -0.09 [-0.11, -0.07] <.001 *** 7636
+    ## SOCIAL_R-SLEEPHRS  -0.01 [-0.04,  0.01]  .197     7636
+    ## AGE-WORK_HRS        0.15 [ 0.13,  0.17] <.001 *** 7636
+    ## AGE-SLEEPHRS       -0.02 [-0.05, -0.00]  .034 *   7636
+    ## WORK_HRS-SLEEPHRS   0.02 [-0.00,  0.04]  .121     7636
+    ## ──────────────────────────────────────────────────────
+
+![](Mydataset_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+    ## Correlation matrix is displayed in the RStudio `Plots` Pane.

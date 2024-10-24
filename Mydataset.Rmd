@@ -94,12 +94,15 @@ mydataset$HAPPY <- as.numeric(mydataset$HAPPY)
 
 describe(mydataset$HAPPY)
 
-mydataset <- mydataset %>%
-  filter(HAPPY < 5)
+mydataset %>% count(HAPPY)
 
-summary(mydataset$HAPPY)
+mydataset$HAPPY_R <- 5 - mydataset$HAPPY
 
-describe(mydataset$HAPPY)
+mydataset %>% count(HAPPY_R)
+
+summary(mydataset$HAPPY_R)
+
+describe(mydataset$HAPPY_R)
 
 
 
@@ -130,11 +133,9 @@ summary(mydataset$EMP_2)
 
 
 ```
+
 ```{r}
-
-Corr(mydataset)
-
-mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "yes", "no")
+mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
 
 model<-lm(SAT ~ SOCIAL_R + Employed, data = mydataset)
 
@@ -148,9 +149,37 @@ tab_model(model)
 
 plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1.5, dot.size = 2.5, colors = "blue") + theme_bruce()
 
+ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_smooth(method = lm) + theme_bruce()
+
 #Higher score of social interaction means more Social interaction, Employed yes means employed.
-#7.1 % of the variability is explained by the whole model.One unit increase in Social interaction frequency means a 0.197 increase in Satisfaction With life. Being employed means a 0.194 increase in satisfaction with life.
+#7.1 % of the variability is explained by the whole model. One unit increase in Social interaction frequency means a 0.197 increase in Satisfaction With life. Being employed means a 0.194 increase in satisfaction with life.
 ```
+
+```{r}
+mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
+
+model<-lm(HAPPY_R ~ SOCIAL_R + Employed, data = mydataset)
+
+performance(model)
+
+check_model(model)
+
+model_summary(model)
+
+tab_model(model)
+
+plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1.5, dot.size = 2.5, colors = "blue") + theme_bruce()
+
+ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = HAPPY_R)) + geom_point() + geom_smooth(method = lm) + theme_bruce()
+```
+
+```{r}
+corrdataset <- mydataset %>%
+  select(SAT, Employed, HAPPY_R, SOCIAL_R, AGE, WORK_HRS, SLEEPHRS,)
+
+Corr(corrdataset)
+```
+
 
 
 
