@@ -111,7 +111,42 @@ library(ggstatsplot)
 ``` r
 library(performance)
 library(sjPlot)
+library(tidyverse)
+```
 
+    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ## ✔ forcats   1.0.0     ✔ readr     2.1.5
+    ## ✔ lubridate 1.9.3     ✔ tibble    3.2.1
+    ## ✔ purrr     1.0.2
+
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ ggplot2::%+%()        masks psych::%+%()
+    ## ✖ ggplot2::alpha()      masks psych::alpha()
+    ## ✖ data.table::between() masks dplyr::between()
+    ## ✖ Matrix::expand()      masks tidyr::expand()
+    ## ✖ dplyr::filter()       masks stats::filter()
+    ## ✖ data.table::first()   masks dplyr::first()
+    ## ✖ lubridate::hour()     masks data.table::hour()
+    ## ✖ lubridate::isoweek()  masks data.table::isoweek()
+    ## ✖ dplyr::lag()          masks stats::lag()
+    ## ✖ data.table::last()    masks dplyr::last()
+    ## ✖ lubridate::mday()     masks data.table::mday()
+    ## ✖ lubridate::minute()   masks data.table::minute()
+    ## ✖ lubridate::month()    masks data.table::month()
+    ## ✖ Matrix::pack()        masks tidyr::pack()
+    ## ✖ lubridate::quarter()  masks data.table::quarter()
+    ## ✖ car::recode()         masks dplyr::recode()
+    ## ✖ lubridate::second()   masks data.table::second()
+    ## ✖ purrr::some()         masks car::some()
+    ## ✖ purrr::transpose()    masks data.table::transpose()
+    ## ✖ Matrix::unpack()      masks tidyr::unpack()
+    ## ✖ lubridate::wday()     masks data.table::wday()
+    ## ✖ lubridate::week()     masks data.table::week()
+    ## ✖ lubridate::yday()     masks data.table::yday()
+    ## ✖ lubridate::year()     masks data.table::year()
+    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+``` r
 load("/Users/leolu/Documents/38964-0001-Data.rda")
 ```
 
@@ -749,3 +784,82 @@ Corr(corrdataset)
 ![](Mydataset_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
     ## Correlation matrix is displayed in the RStudio `Plots` Pane.
+
+``` r
+Alpha(mydataset, "SAT", 1:5)
+```
+
+    ## 
+    ## Reliability Analysis
+    ## 
+    ## Summary:
+    ## Total Items: 5
+    ## Scale Range: 1 ~ 5
+    ## Total Cases: 7636
+    ## Valid Cases: 7636 (100.0%)
+    ## 
+    ## Scale Statistics:
+    ## Mean = 3.084
+    ## S.D. = 0.992
+    ## Cronbach’s α = 0.864
+    ## McDonald’s ω = 0.870
+    ## 
+    ## Item Statistics (Cronbach’s α If Item Deleted):
+    ## ───────────────────────────────────────────────
+    ##        Mean    S.D. Item-Rest Cor. Cronbach’s α
+    ## ───────────────────────────────────────────────
+    ## SAT1  3.030 (1.187)          0.734        0.824
+    ## SAT2  3.037 (1.188)          0.734        0.824
+    ## SAT3  3.267 (1.243)          0.775        0.812
+    ## SAT4  3.364 (1.215)          0.662        0.841
+    ## SAT5  2.721 (1.326)          0.538        0.875
+    ## ───────────────────────────────────────────────
+    ## Item-Rest Cor. = Corrected Item-Total Correlation
+
+``` r
+EFA(mydataset, "SAT", 1:5, method = "pa", plot.scree = TRUE, nfactors = c("parallel"))
+```
+
+    ## 
+    ## Explanatory Factor Analysis
+    ## 
+    ## Summary:
+    ## Total Items: 5
+    ## Scale Range: 1 ~ 5
+    ## Total Cases: 7636
+    ## Valid Cases: 7636 (100.0%)
+    ## 
+    ## Extraction Method:
+    ## - Principal Axis Factor Analysis
+    ## Rotation Method:
+    ## - (Only one component was extracted. The solution was not rotated.)
+    ## 
+    ## KMO and Bartlett's Test:
+    ## - Kaiser-Meyer-Olkin (KMO) Measure of Sampling Adequacy: MSA = 0.861
+    ## - Bartlett's Test of Sphericity: Approx. χ²(10) = 18345.17, p < 1e-99 ***
+    ## 
+    ## Total Variance Explained:
+    ## ───────────────────────────────────────────────────────────────────────────────
+    ##           Eigenvalue Variance % Cumulative % SS Loading Variance % Cumulative %
+    ## ───────────────────────────────────────────────────────────────────────────────
+    ## Factor 1       3.281     65.614       65.614      2.888     57.768       57.768
+    ## Factor 2       0.634     12.689       78.304                                   
+    ## Factor 3       0.486      9.714       88.017                                   
+    ## Factor 4       0.318      6.352       94.369                                   
+    ## Factor 5       0.282      5.631      100.000                                   
+    ## ───────────────────────────────────────────────────────────────────────────────
+    ## 
+    ## Factor Loadings (Sorted by Size):
+    ## ───────────────────────
+    ##         PA1 Communality
+    ## ───────────────────────
+    ## SAT3  0.859       0.738
+    ## SAT2  0.811       0.658
+    ## SAT1  0.809       0.654
+    ## SAT4  0.714       0.510
+    ## SAT5  0.573       0.329
+    ## ───────────────────────
+    ## Communality = Sum of Squared (SS) Factor Loadings
+    ## (Uniqueness = 1 - Communality)
+
+![](Mydataset_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->

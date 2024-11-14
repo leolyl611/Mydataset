@@ -17,6 +17,7 @@ library(car)
 library(ggstatsplot)
 library(performance)
 library(sjPlot)
+library(tidyverse)
 
 load("/Users/leolu/Documents/38964-0001-Data.rda")
 
@@ -178,6 +179,14 @@ corrdataset <- mydataset %>%
   select(SAT, Employed, HAPPY_R, SOCIAL_R, AGE, WORK_HRS, SLEEPHRS,)
 
 Corr(corrdataset)
+```
+```{r}
+
+Alpha(mydataset, "SAT", 1:5)
+
+EFA(mydataset, "SAT", 1:5, method = "pa", plot.scree = TRUE, nfactors = c("parallel"))
+
+
 ```
 
 
