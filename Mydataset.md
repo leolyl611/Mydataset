@@ -353,6 +353,48 @@ describe(mydataset$HAPPY_R)
     ## X1    1 7637 3.02 0.73      3    3.06   0   1   4     3 -0.45     0.06 0.01
 
 ``` r
+summary(mydataset)
+```
+
+    ##       SAT1           SAT2            SAT3            SAT4            SAT5      
+    ##  Min.   :1.00   Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   :1.000  
+    ##  1st Qu.:2.00   1st Qu.:2.000   1st Qu.:2.000   1st Qu.:2.000   1st Qu.:2.000  
+    ##  Median :3.00   Median :3.000   Median :4.000   Median :4.000   Median :3.000  
+    ##  Mean   :3.03   Mean   :3.037   Mean   :3.267   Mean   :3.364   Mean   :2.721  
+    ##  3rd Qu.:4.00   3rd Qu.:4.000   3rd Qu.:4.000   3rd Qu.:4.000   3rd Qu.:4.000  
+    ##  Max.   :5.00   Max.   :5.000   Max.   :5.000   Max.   :5.000   Max.   :5.000  
+    ##                     EMP_1                         EMP_2          HAPPY     
+    ##  (00) Item not selected:4161   (00) Item not selected:7279   Min.   :1.00  
+    ##  (01) Item selected    :3475   (01) Item selected    : 357   1st Qu.:1.00  
+    ##  (99) Refusal          :   1   (99) Refusal          :   1   Median :2.00  
+    ##                                                              Mean   :1.98  
+    ##                                                              3rd Qu.:2.00  
+    ##                                                              Max.   :4.00  
+    ##     SOCIAL_2          AGE                               WORK_HRS   
+    ##  Min.   :1.000   Min.   :18.00   (01) Less than 20 hours    : 281  
+    ##  1st Qu.:2.000   1st Qu.:30.00   (02) 20-34 hours           : 836  
+    ##  Median :3.000   Median :40.00   (03) 35-45 hours           :2139  
+    ##  Mean   :2.564   Mean   :41.05   (04) More than 45 hours    : 614  
+    ##  3rd Qu.:3.000   3rd Qu.:53.00   (96) Question was not asked:3767  
+    ##  Max.   :7.000   Max.   :64.00   (99) Refusal               :   0  
+    ##     SLEEPHRS           SAT           SOCIAL_R         HAPPY_R    
+    ##  Min.   : 4.000   Min.   :1.000   Min.   :-2.000   Min.   :1.00  
+    ##  1st Qu.: 6.000   1st Qu.:2.400   1st Qu.: 2.000   1st Qu.:3.00  
+    ##  Median : 7.000   Median :3.200   Median : 2.000   Median :3.00  
+    ##  Mean   : 7.984   Mean   :3.084   Mean   : 2.436   Mean   :3.02  
+    ##  3rd Qu.: 8.000   3rd Qu.:3.800   3rd Qu.: 3.000   3rd Qu.:4.00  
+    ##  Max.   :99.000   Max.   :5.000   Max.   : 4.000   Max.   :4.00
+
+``` r
+mydataset %>%
+  dplyr::summarize(mean_AGE    = mean(AGE),
+      std_dev_AGE = sd(AGE))
+```
+
+    ##   mean_AGE std_dev_AGE
+    ## 1 41.04714     13.5863
+
+``` r
 mydataset <- mydataset %>%
   filter(EMP_1 != "(99) Refusal")
 
@@ -439,7 +481,7 @@ summary(mydataset$EMP_2)
 ``` r
 mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
 
-model<-lm(SAT ~ SOCIAL_R + Employed, data = mydataset)
+model<-lm(SAT ~ SOCIAL_R + Employed + AGE, data = mydataset)
 
 performance(model)
 ```
@@ -448,16 +490,16 @@ performance(model)
     ## 
     ## AIC       |      AICc |       BIC |    R2 | R2 (adj.) |  RMSE | Sigma
     ## ---------------------------------------------------------------------
-    ## 20992.901 | 20992.906 | 21020.664 | 0.072 |     0.071 | 0.956 | 0.956
+    ## 20970.271 | 20970.278 | 21004.974 | 0.074 |     0.074 | 0.955 | 0.955
 
 ``` r
 check_model(model)
 ```
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](Mydataset_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
-model_summary(model)
+model_summary(model, show.std = TRUE)
 ```
 
     ## 
@@ -466,15 +508,17 @@ model_summary(model)
     ## ─────────────────────────
     ##              (1) SAT     
     ## ─────────────────────────
-    ## (Intercept)     2.506 ***
-    ##                (0.026)   
-    ## SOCIAL_R        0.197 ***
+    ## (Intercept)     2.326 ***
+    ##                (0.045)   
+    ## SOCIAL_R        0.200 ***
     ##                (0.009)   
-    ## Employed1       0.193 ***
+    ## Employed1       0.207 ***
     ##                (0.022)   
+    ## AGE             0.004 ***
+    ##                (0.001)   
     ## ─────────────────────────
-    ## R^2             0.072    
-    ## Adj. R^2        0.071    
+    ## R^2             0.074    
+    ## Adj. R^2        0.074    
     ## Num. obs.    7636        
     ## ─────────────────────────
     ## Note. * p < .05, ** p < .01, *** p < .001.
@@ -484,8 +528,34 @@ model_summary(model)
     ## Low Correlation
     ## 
     ##      Term  VIF   VIF 95% CI Increased SE Tolerance Tolerance 95% CI
-    ##  SOCIAL_R 1.01 [1.00, 1.08]         1.01      0.99     [0.93, 1.00]
-    ##  Employed 1.01 [1.00, 1.08]         1.01      0.99     [0.93, 1.00]
+    ##  SOCIAL_R 1.02 [1.00, 1.07]         1.01      0.98     [0.94, 1.00]
+    ##  Employed 1.03 [1.01, 1.06]         1.01      0.97     [0.94, 0.99]
+    ##       AGE 1.02 [1.01, 1.06]         1.01      0.98     [0.94, 0.99]
+
+``` r
+summary(model)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = SAT ~ SOCIAL_R + Employed + AGE, data = mydataset)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.58886 -0.68823  0.06936  0.70540  2.54463 
+    ## 
+    ## Coefficients:
+    ##              Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 2.3262011  0.0447325  52.002   <2e-16 ***
+    ## SOCIAL_R    0.2004531  0.0091845  21.825   <2e-16 ***
+    ## Employed1   0.2065345  0.0221453   9.326   <2e-16 ***
+    ## AGE         0.0040366  0.0008129   4.966    7e-07 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.9548 on 7632 degrees of freedom
+    ## Multiple R-squared:  0.07449,    Adjusted R-squared:  0.07413 
+    ## F-statistic: 204.8 on 3 and 7632 DF,  p-value: < 2.2e-16
 
 ``` r
 tab_model(model)
@@ -519,10 +589,10 @@ p
 (Intercept)
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-2.51
+2.33
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-2.45 – 2.56
+2.24 – 2.41
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 <strong>\<0.001</strong>
@@ -547,10 +617,24 @@ SOCIAL R
 Employed \[1\]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.19
+0.21
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.15 – 0.24
+0.16 – 0.25
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>\<0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+AGE
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.00 – 0.01
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 <strong>\<0.001</strong>
@@ -569,7 +653,7 @@ Observations
 R<sup>2</sup> / R<sup>2</sup> adjusted
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
-0.072 / 0.071
+0.074 / 0.074
 </td>
 </tr>
 </table>
@@ -578,7 +662,7 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1.5, dot.size = 2.5, colors = "blue") + theme_bruce()
 ```
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+![](Mydataset_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
 
 ``` r
 ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_smooth(method = lm) + theme_bruce()
@@ -586,7 +670,7 @@ ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_sm
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-4-3.png)<!-- -->
+![](Mydataset_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
 
 ``` r
 #Higher score of social interaction means more Social interaction, Employed yes means employed.
@@ -596,7 +680,7 @@ ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_sm
 ``` r
 mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
 
-model<-lm(HAPPY_R ~ SOCIAL_R + Employed, data = mydataset)
+model<-lm(HAPPY_R ~ SOCIAL_R + Employed + AGE, data = mydataset)
 
 performance(model)
 ```
@@ -605,16 +689,16 @@ performance(model)
     ## 
     ## AIC       |      AICc |       BIC |    R2 | R2 (adj.) |  RMSE | Sigma
     ## ---------------------------------------------------------------------
-    ## 16430.390 | 16430.396 | 16458.153 | 0.059 |     0.059 | 0.709 | 0.709
+    ## 16431.037 | 16431.045 | 16465.740 | 0.059 |     0.059 | 0.709 | 0.709
 
 ``` r
 check_model(model)
 ```
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](Mydataset_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
-model_summary(model)
+model_summary(model, show.std = TRUE)
 ```
 
     ## 
@@ -623,12 +707,14 @@ model_summary(model)
     ## ─────────────────────────
     ##              (1) HAPPY_R 
     ## ─────────────────────────
-    ## (Intercept)     2.633 ***
-    ##                (0.019)   
-    ## SOCIAL_R        0.134 ***
+    ## (Intercept)     2.602 ***
+    ##                (0.033)   
+    ## SOCIAL_R        0.135 ***
     ##                (0.007)   
-    ## Employed1       0.118 ***
+    ## Employed1       0.120 ***
     ##                (0.016)   
+    ## AGE             0.001    
+    ##                (0.001)   
     ## ─────────────────────────
     ## R^2             0.059    
     ## Adj. R^2        0.059    
@@ -641,8 +727,34 @@ model_summary(model)
     ## Low Correlation
     ## 
     ##      Term  VIF   VIF 95% CI Increased SE Tolerance Tolerance 95% CI
-    ##  SOCIAL_R 1.01 [1.00, 1.08]         1.01      0.99     [0.93, 1.00]
-    ##  Employed 1.01 [1.00, 1.08]         1.01      0.99     [0.93, 1.00]
+    ##  SOCIAL_R 1.02 [1.00, 1.07]         1.01      0.98     [0.94, 1.00]
+    ##  Employed 1.03 [1.01, 1.06]         1.01      0.97     [0.94, 0.99]
+    ##       AGE 1.02 [1.01, 1.06]         1.01      0.98     [0.94, 0.99]
+
+``` r
+summary(model)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = HAPPY_R ~ SOCIAL_R + Employed + AGE, data = mydataset)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.29671 -0.28195 -0.02397  0.69276  1.38462 
+    ## 
+    ## Coefficients:
+    ##              Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 2.6020376  0.0332307  78.302  < 2e-16 ***
+    ## SOCIAL_R    0.1349610  0.0068229  19.780  < 2e-16 ***
+    ## Employed1   0.1204052  0.0164512   7.319 2.75e-13 ***
+    ## AGE         0.0007024  0.0006039   1.163    0.245    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.7093 on 7632 degrees of freedom
+    ## Multiple R-squared:  0.05927,    Adjusted R-squared:  0.0589 
+    ## F-statistic: 160.3 on 3 and 7632 DF,  p-value: < 2.2e-16
 
 ``` r
 tab_model(model)
@@ -676,10 +788,10 @@ p
 (Intercept)
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-2.63
+2.60
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-2.60 – 2.67
+2.54 – 2.67
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 <strong>\<0.001</strong>
@@ -714,6 +826,20 @@ Employed \[1\]
 </td>
 </tr>
 <tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+AGE
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.00 – 0.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.245
+</td>
+</tr>
+<tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
 Observations
 </td>
@@ -735,7 +861,7 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1.5, dot.size = 2.5, colors = "blue") + theme_bruce()
 ```
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+![](Mydataset_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
 
 ``` r
 ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = HAPPY_R)) + geom_point() + geom_smooth(method = lm) + theme_bruce()
@@ -743,45 +869,55 @@ ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = HAPPY_R)) + geom_point() + geo
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
+![](Mydataset_files/figure-gfm/unnamed-chunk-6-3.png)<!-- -->
 
 ``` r
-corrdataset <- mydataset %>%
-  select(SAT, Employed, HAPPY_R, SOCIAL_R, AGE, WORK_HRS, SLEEPHRS,)
+corrdatasetS <- mydataset %>%
+  select(SAT, Employed, SOCIAL_R, AGE)
 
-Corr(corrdataset)
+Corr(corrdatasetS)
 ```
 
-    ## NOTE: `Employed`, `WORK_HRS` transformed to numeric.
+    ## NOTE: `Employed` transformed to numeric.
     ## 
     ## Pearson's r and 95% confidence intervals:
     ## ──────────────────────────────────────────────────────
     ##                        r       [95% CI]     p        N
     ## ──────────────────────────────────────────────────────
     ## SAT-Employed        0.12 [ 0.10,  0.15] <.001 *** 7636
-    ## SAT-HAPPY_R         0.61 [ 0.59,  0.62] <.001 *** 7636
     ## SAT-SOCIAL_R        0.25 [ 0.23,  0.27] <.001 *** 7636
     ## SAT-AGE             0.02 [-0.00,  0.04]  .058 .   7636
-    ## SAT-WORK_HRS       -0.09 [-0.11, -0.06] <.001 *** 7636
-    ## SAT-SLEEPHRS        0.02 [ 0.00,  0.04]  .049 *   7636
-    ## Employed-HAPPY_R    0.11 [ 0.08,  0.13] <.001 *** 7636
     ## Employed-SOCIAL_R   0.11 [ 0.09,  0.13] <.001 *** 7636
     ## Employed-AGE       -0.13 [-0.15, -0.11] <.001 *** 7636
-    ## Employed-WORK_HRS  -0.88 [-0.88, -0.87] <.001 *** 7636
-    ## Employed-SLEEPHRS  -0.03 [-0.05, -0.01]  .006 **  7636
-    ## HAPPY_R-SOCIAL_R    0.23 [ 0.21,  0.25] <.001 *** 7636
-    ## HAPPY_R-AGE        -0.02 [-0.04,  0.01]  .163     7636
-    ## HAPPY_R-WORK_HRS   -0.08 [-0.10, -0.05] <.001 *** 7636
-    ## HAPPY_R-SLEEPHRS    0.03 [ 0.01,  0.06]  .004 **  7636
     ## SOCIAL_R-AGE       -0.08 [-0.11, -0.06] <.001 *** 7636
-    ## SOCIAL_R-WORK_HRS  -0.09 [-0.11, -0.07] <.001 *** 7636
-    ## SOCIAL_R-SLEEPHRS  -0.01 [-0.04,  0.01]  .197     7636
-    ## AGE-WORK_HRS        0.15 [ 0.13,  0.17] <.001 *** 7636
-    ## AGE-SLEEPHRS       -0.02 [-0.05, -0.00]  .034 *   7636
-    ## WORK_HRS-SLEEPHRS   0.02 [-0.00,  0.04]  .121     7636
     ## ──────────────────────────────────────────────────────
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](Mydataset_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+    ## Correlation matrix is displayed in the RStudio `Plots` Pane.
+
+``` r
+corrdatasetH <- mydataset %>%
+  select(HAPPY_R, Employed, SOCIAL_R, AGE)
+
+Corr(corrdatasetH)
+```
+
+    ## NOTE: `Employed` transformed to numeric.
+    ## 
+    ## Pearson's r and 95% confidence intervals:
+    ## ──────────────────────────────────────────────────────
+    ##                        r       [95% CI]     p        N
+    ## ──────────────────────────────────────────────────────
+    ## HAPPY_R-Employed    0.11 [ 0.08,  0.13] <.001 *** 7636
+    ## HAPPY_R-SOCIAL_R    0.23 [ 0.21,  0.25] <.001 *** 7636
+    ## HAPPY_R-AGE        -0.02 [-0.04,  0.01]  .163     7636
+    ## Employed-SOCIAL_R   0.11 [ 0.09,  0.13] <.001 *** 7636
+    ## Employed-AGE       -0.13 [-0.15, -0.11] <.001 *** 7636
+    ## SOCIAL_R-AGE       -0.08 [-0.11, -0.06] <.001 *** 7636
+    ## ──────────────────────────────────────────────────────
+
+![](Mydataset_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
 
     ## Correlation matrix is displayed in the RStudio `Plots` Pane.
 
@@ -862,4 +998,4 @@ EFA(mydataset, "SAT", 1:5, method = "pa", plot.scree = TRUE, nfactors = c("paral
     ## Communality = Sum of Squared (SS) Factor Loadings
     ## (Uniqueness = 1 - Communality)
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](Mydataset_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->

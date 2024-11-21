@@ -109,6 +109,13 @@ describe(mydataset$HAPPY_R)
 
 ```
 ```{r}
+summary(mydataset)
+mydataset %>%
+  dplyr::summarize(mean_AGE    = mean(AGE),
+      std_dev_AGE = sd(AGE))
+```
+
+```{r}
 
 mydataset <- mydataset %>%
   filter(EMP_1 != "(99) Refusal")
@@ -138,13 +145,15 @@ summary(mydataset$EMP_2)
 ```{r}
 mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
 
-model<-lm(SAT ~ SOCIAL_R + Employed, data = mydataset)
+model<-lm(SAT ~ SOCIAL_R + Employed + AGE, data = mydataset)
 
 performance(model)
 
 check_model(model)
 
-model_summary(model)
+model_summary(model, show.std = TRUE)
+
+summary(model)
 
 tab_model(model)
 
@@ -159,13 +168,15 @@ ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_sm
 ```{r}
 mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
 
-model<-lm(HAPPY_R ~ SOCIAL_R + Employed, data = mydataset)
+model<-lm(HAPPY_R ~ SOCIAL_R + Employed + AGE, data = mydataset)
 
 performance(model)
 
 check_model(model)
 
-model_summary(model)
+model_summary(model, show.std = TRUE)
+
+summary(model)
 
 tab_model(model)
 
@@ -175,10 +186,15 @@ ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = HAPPY_R)) + geom_point() + geo
 ```
 
 ```{r}
-corrdataset <- mydataset %>%
-  select(SAT, Employed, HAPPY_R, SOCIAL_R, AGE, WORK_HRS, SLEEPHRS,)
+corrdatasetS <- mydataset %>%
+  select(SAT, Employed, SOCIAL_R, AGE)
 
-Corr(corrdataset)
+Corr(corrdatasetS)
+
+corrdatasetH <- mydataset %>%
+  select(HAPPY_R, Employed, SOCIAL_R, AGE)
+
+Corr(corrdatasetH)
 ```
 ```{r}
 
