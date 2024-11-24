@@ -147,6 +147,9 @@ library(tidyverse)
     ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 ``` r
+library(ggcorrplot)
+
+
 load("/Users/leolu/Documents/38964-0001-Data.rda")
 ```
 
@@ -481,7 +484,16 @@ summary(mydataset$EMP_2)
 ``` r
 mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
 
-model<-lm(SAT ~ SOCIAL_R + Employed + AGE, data = mydataset)
+mydatasetr <- mydataset %>%
+  rename(
+    SWL = SAT,
+    Happiness = HAPPY_R,
+    Employment_Status = Employed,
+    Social_Interaction = SOCIAL_R,
+    Age = AGE
+  )
+
+model<-lm(SWL ~ Social_Interaction + Employment_Status + Age, data = mydatasetr)
 
 performance(model)
 ```
@@ -505,32 +517,32 @@ model_summary(model, show.std = TRUE)
     ## 
     ## Model Summary
     ## 
-    ## ─────────────────────────
-    ##              (1) SAT     
-    ## ─────────────────────────
-    ## (Intercept)     2.326 ***
-    ##                (0.045)   
-    ## SOCIAL_R        0.200 ***
-    ##                (0.009)   
-    ## Employed1       0.207 ***
-    ##                (0.022)   
-    ## AGE             0.004 ***
-    ##                (0.001)   
-    ## ─────────────────────────
-    ## R^2             0.074    
-    ## Adj. R^2        0.074    
-    ## Num. obs.    7636        
-    ## ─────────────────────────
+    ## ────────────────────────────────
+    ##                     (1) SWL     
+    ## ────────────────────────────────
+    ## (Intercept)            2.326 ***
+    ##                       (0.045)   
+    ## Social_Interaction     0.200 ***
+    ##                       (0.009)   
+    ## Employment_Status1     0.207 ***
+    ##                       (0.022)   
+    ## Age                    0.004 ***
+    ##                       (0.001)   
+    ## ────────────────────────────────
+    ## R^2                    0.074    
+    ## Adj. R^2               0.074    
+    ## Num. obs.           7636        
+    ## ────────────────────────────────
     ## Note. * p < .05, ** p < .01, *** p < .001.
     ## 
     ## # Check for Multicollinearity
     ## 
     ## Low Correlation
     ## 
-    ##      Term  VIF   VIF 95% CI Increased SE Tolerance Tolerance 95% CI
-    ##  SOCIAL_R 1.02 [1.00, 1.07]         1.01      0.98     [0.94, 1.00]
-    ##  Employed 1.03 [1.01, 1.06]         1.01      0.97     [0.94, 0.99]
-    ##       AGE 1.02 [1.01, 1.06]         1.01      0.98     [0.94, 0.99]
+    ##                Term  VIF   VIF 95% CI Increased SE Tolerance Tolerance 95% CI
+    ##  Social_Interaction 1.02 [1.00, 1.07]         1.01      0.98     [0.94, 1.00]
+    ##   Employment_Status 1.03 [1.01, 1.06]         1.01      0.97     [0.94, 0.99]
+    ##                 Age 1.02 [1.01, 1.06]         1.01      0.98     [0.94, 0.99]
 
 ``` r
 summary(model)
@@ -538,18 +550,19 @@ summary(model)
 
     ## 
     ## Call:
-    ## lm(formula = SAT ~ SOCIAL_R + Employed + AGE, data = mydataset)
+    ## lm(formula = SWL ~ Social_Interaction + Employment_Status + Age, 
+    ##     data = mydatasetr)
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
     ## -2.58886 -0.68823  0.06936  0.70540  2.54463 
     ## 
     ## Coefficients:
-    ##              Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept) 2.3262011  0.0447325  52.002   <2e-16 ***
-    ## SOCIAL_R    0.2004531  0.0091845  21.825   <2e-16 ***
-    ## Employed1   0.2065345  0.0221453   9.326   <2e-16 ***
-    ## AGE         0.0040366  0.0008129   4.966    7e-07 ***
+    ##                     Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)        2.3262011  0.0447325  52.002   <2e-16 ***
+    ## Social_Interaction 0.2004531  0.0091845  21.825   <2e-16 ***
+    ## Employment_Status1 0.2065345  0.0221453   9.326   <2e-16 ***
+    ## Age                0.0040366  0.0008129   4.966    7e-07 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -567,7 +580,7 @@ tab_model(model)
  
 </th>
 <th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
-SAT
+SWL
 </th>
 </tr>
 <tr>
@@ -600,7 +613,7 @@ p
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
-SOCIAL R
+Social Interaction
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.20
@@ -614,7 +627,7 @@ SOCIAL R
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
-Employed \[1\]
+Employment Status \[1\]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.21
@@ -628,7 +641,7 @@ Employed \[1\]
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
-AGE
+Age
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.00
@@ -659,18 +672,14 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 </table>
 
 ``` r
-plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1.5, dot.size = 2.5, colors = "blue") + theme_bruce()
-```
+#plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1.5, dot.size = 2.5, colors = "black") + theme_bruce() + geom_errorbarh(aes(y = SWL, xmin = 0.94, xmax = 1), height = 0.2, size = 1.5) 
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
-
-``` r
 ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_smooth(method = lm) + theme_bruce()
 ```
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
+![](Mydataset_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
 
 ``` r
 #Higher score of social interaction means more Social interaction, Employed yes means employed.
@@ -680,7 +689,7 @@ ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_sm
 ``` r
 mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
 
-model<-lm(HAPPY_R ~ SOCIAL_R + Employed + AGE, data = mydataset)
+model<-lm(Happiness ~ Social_Interaction + Employment_Status + Age, data = mydatasetr)
 
 performance(model)
 ```
@@ -704,32 +713,32 @@ model_summary(model, show.std = TRUE)
     ## 
     ## Model Summary
     ## 
-    ## ─────────────────────────
-    ##              (1) HAPPY_R 
-    ## ─────────────────────────
-    ## (Intercept)     2.602 ***
-    ##                (0.033)   
-    ## SOCIAL_R        0.135 ***
-    ##                (0.007)   
-    ## Employed1       0.120 ***
-    ##                (0.016)   
-    ## AGE             0.001    
-    ##                (0.001)   
-    ## ─────────────────────────
-    ## R^2             0.059    
-    ## Adj. R^2        0.059    
-    ## Num. obs.    7636        
-    ## ─────────────────────────
+    ## ─────────────────────────────────
+    ##                     (1) Happiness
+    ## ─────────────────────────────────
+    ## (Intercept)            2.602 *** 
+    ##                       (0.033)    
+    ## Social_Interaction     0.135 *** 
+    ##                       (0.007)    
+    ## Employment_Status1     0.120 *** 
+    ##                       (0.016)    
+    ## Age                    0.001     
+    ##                       (0.001)    
+    ## ─────────────────────────────────
+    ## R^2                    0.059     
+    ## Adj. R^2               0.059     
+    ## Num. obs.           7636         
+    ## ─────────────────────────────────
     ## Note. * p < .05, ** p < .01, *** p < .001.
     ## 
     ## # Check for Multicollinearity
     ## 
     ## Low Correlation
     ## 
-    ##      Term  VIF   VIF 95% CI Increased SE Tolerance Tolerance 95% CI
-    ##  SOCIAL_R 1.02 [1.00, 1.07]         1.01      0.98     [0.94, 1.00]
-    ##  Employed 1.03 [1.01, 1.06]         1.01      0.97     [0.94, 0.99]
-    ##       AGE 1.02 [1.01, 1.06]         1.01      0.98     [0.94, 0.99]
+    ##                Term  VIF   VIF 95% CI Increased SE Tolerance Tolerance 95% CI
+    ##  Social_Interaction 1.02 [1.00, 1.07]         1.01      0.98     [0.94, 1.00]
+    ##   Employment_Status 1.03 [1.01, 1.06]         1.01      0.97     [0.94, 0.99]
+    ##                 Age 1.02 [1.01, 1.06]         1.01      0.98     [0.94, 0.99]
 
 ``` r
 summary(model)
@@ -737,18 +746,19 @@ summary(model)
 
     ## 
     ## Call:
-    ## lm(formula = HAPPY_R ~ SOCIAL_R + Employed + AGE, data = mydataset)
+    ## lm(formula = Happiness ~ Social_Interaction + Employment_Status + 
+    ##     Age, data = mydatasetr)
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
     ## -2.29671 -0.28195 -0.02397  0.69276  1.38462 
     ## 
     ## Coefficients:
-    ##              Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept) 2.6020376  0.0332307  78.302  < 2e-16 ***
-    ## SOCIAL_R    0.1349610  0.0068229  19.780  < 2e-16 ***
-    ## Employed1   0.1204052  0.0164512   7.319 2.75e-13 ***
-    ## AGE         0.0007024  0.0006039   1.163    0.245    
+    ##                     Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)        2.6020376  0.0332307  78.302  < 2e-16 ***
+    ## Social_Interaction 0.1349610  0.0068229  19.780  < 2e-16 ***
+    ## Employment_Status1 0.1204052  0.0164512   7.319 2.75e-13 ***
+    ## Age                0.0007024  0.0006039   1.163    0.245    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -766,7 +776,7 @@ tab_model(model)
  
 </th>
 <th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
-HAPPY_R
+Happiness
 </th>
 </tr>
 <tr>
@@ -799,7 +809,7 @@ p
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
-SOCIAL R
+Social Interaction
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.13
@@ -813,7 +823,7 @@ SOCIAL R
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
-Employed \[1\]
+Employment Status \[1\]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.12
@@ -827,7 +837,7 @@ Employed \[1\]
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
-AGE
+Age
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.00
@@ -858,7 +868,7 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 </table>
 
 ``` r
-plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1.5, dot.size = 2.5, colors = "blue") + theme_bruce()
+plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1, dot.size = 2, colors = "black") + theme_bruce()
 ```
 
 ![](Mydataset_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
@@ -872,54 +882,39 @@ ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = HAPPY_R)) + geom_point() + geo
 ![](Mydataset_files/figure-gfm/unnamed-chunk-6-3.png)<!-- -->
 
 ``` r
-corrdatasetS <- mydataset %>%
-  select(SAT, Employed, SOCIAL_R, AGE)
+corrdataset <- mydatasetr %>%
+  select(SWL, Happiness, Employment_Status, Social_Interaction, Age) %>% mutate(Employment_Status = as.numeric(Employment_Status))
 
-Corr(corrdatasetS)
+Corr(corrdataset)
 ```
 
-    ## NOTE: `Employed` transformed to numeric.
-    ## 
     ## Pearson's r and 95% confidence intervals:
-    ## ──────────────────────────────────────────────────────
-    ##                        r       [95% CI]     p        N
-    ## ──────────────────────────────────────────────────────
-    ## SAT-Employed        0.12 [ 0.10,  0.15] <.001 *** 7636
-    ## SAT-SOCIAL_R        0.25 [ 0.23,  0.27] <.001 *** 7636
-    ## SAT-AGE             0.02 [-0.00,  0.04]  .058 .   7636
-    ## Employed-SOCIAL_R   0.11 [ 0.09,  0.13] <.001 *** 7636
-    ## Employed-AGE       -0.13 [-0.15, -0.11] <.001 *** 7636
-    ## SOCIAL_R-AGE       -0.08 [-0.11, -0.06] <.001 *** 7636
-    ## ──────────────────────────────────────────────────────
+    ## ─────────────────────────────────────────────────────────────────────────
+    ##                                           r       [95% CI]     p        N
+    ## ─────────────────────────────────────────────────────────────────────────
+    ## SWL-Happiness                          0.61 [ 0.59,  0.62] <.001 *** 7636
+    ## SWL-Employment_Status                  0.12 [ 0.10,  0.15] <.001 *** 7636
+    ## SWL-Social_Interaction                 0.25 [ 0.23,  0.27] <.001 *** 7636
+    ## SWL-Age                                0.02 [-0.00,  0.04]  .058 .   7636
+    ## Happiness-Employment_Status            0.11 [ 0.08,  0.13] <.001 *** 7636
+    ## Happiness-Social_Interaction           0.23 [ 0.21,  0.25] <.001 *** 7636
+    ## Happiness-Age                         -0.02 [-0.04,  0.01]  .163     7636
+    ## Employment_Status-Social_Interaction   0.11 [ 0.09,  0.13] <.001 *** 7636
+    ## Employment_Status-Age                 -0.13 [-0.15, -0.11] <.001 *** 7636
+    ## Social_Interaction-Age                -0.08 [-0.11, -0.06] <.001 *** 7636
+    ## ─────────────────────────────────────────────────────────────────────────
 
 ![](Mydataset_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
     ## Correlation matrix is displayed in the RStudio `Plots` Pane.
 
 ``` r
-corrdatasetH <- mydataset %>%
-  select(HAPPY_R, Employed, SOCIAL_R, AGE)
+corr_matrix <- cor(corrdataset, use = "complete.obs") 
 
-Corr(corrdatasetH)
+ggcorrplot(corr_matrix, method = "square", colors = c("blue", "grey", "white"), title = "Correlation Plot", lab = TRUE)
 ```
 
-    ## NOTE: `Employed` transformed to numeric.
-    ## 
-    ## Pearson's r and 95% confidence intervals:
-    ## ──────────────────────────────────────────────────────
-    ##                        r       [95% CI]     p        N
-    ## ──────────────────────────────────────────────────────
-    ## HAPPY_R-Employed    0.11 [ 0.08,  0.13] <.001 *** 7636
-    ## HAPPY_R-SOCIAL_R    0.23 [ 0.21,  0.25] <.001 *** 7636
-    ## HAPPY_R-AGE        -0.02 [-0.04,  0.01]  .163     7636
-    ## Employed-SOCIAL_R   0.11 [ 0.09,  0.13] <.001 *** 7636
-    ## Employed-AGE       -0.13 [-0.15, -0.11] <.001 *** 7636
-    ## SOCIAL_R-AGE       -0.08 [-0.11, -0.06] <.001 *** 7636
-    ## ──────────────────────────────────────────────────────
-
 ![](Mydataset_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
-
-    ## Correlation matrix is displayed in the RStudio `Plots` Pane.
 
 ``` r
 Alpha(mydataset, "SAT", 1:5)
