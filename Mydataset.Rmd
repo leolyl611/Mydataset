@@ -168,7 +168,7 @@ summary(model)
 
 tab_model(model)
 
-#plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1.5, dot.size = 2.5, colors = "black") + theme_bruce() + geom_errorbarh(aes(y = SWL, xmin = 0.94, xmax = 1), height = 0.2, size = 1.5) 
+plot_model(model,  type ="std",  show.values = TRUE, vline.color = "#1B191999", line.size = 1, dot.size = 2.5, colors = "black", axis.lim = c(-1, 1)) + theme_bruce() 
 
 ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_smooth(method = lm) + theme_bruce()
 
@@ -202,7 +202,7 @@ ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = HAPPY_R)) + geom_point() + geo
 corrdataset <- mydatasetr %>%
   select(SWL, Happiness, Employment_Status, Social_Interaction, Age) %>% mutate(Employment_Status = as.numeric(Employment_Status))
 
-Corr(corrdataset)
+Corr(corrdataset, plot.colors=c("#b2182b", "white", "#2166ac"))
 
 corr_matrix <- cor(corrdataset, use = "complete.obs") 
 

@@ -111,6 +111,11 @@ library(ggstatsplot)
 ``` r
 library(performance)
 library(sjPlot)
+```
+
+    ## Install package "strengejacke" from GitHub (`devtools::install_github("strengejacke/strengejacke")`) to load all sj-packages at once!
+
+``` r
 library(tidyverse)
 ```
 
@@ -672,14 +677,18 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 </table>
 
 ``` r
-#plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1.5, dot.size = 2.5, colors = "black") + theme_bruce() + geom_errorbarh(aes(y = SWL, xmin = 0.94, xmax = 1), height = 0.2, size = 1.5) 
+plot_model(model,  type ="std",  show.values = TRUE, vline.color = "#1B191999", line.size = 1, dot.size = 2.5, colors = "black", axis.lim = c(-1, 1)) + theme_bruce() 
+```
 
+![](Mydataset_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+
+``` r
 ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_smooth(method = lm) + theme_bruce()
 ```
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
-![](Mydataset_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+![](Mydataset_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
 
 ``` r
 #Higher score of social interaction means more Social interaction, Employed yes means employed.
@@ -885,7 +894,7 @@ ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = HAPPY_R)) + geom_point() + geo
 corrdataset <- mydatasetr %>%
   select(SWL, Happiness, Employment_Status, Social_Interaction, Age) %>% mutate(Employment_Status = as.numeric(Employment_Status))
 
-Corr(corrdataset)
+Corr(corrdataset, plot.colors=c("#b2182b", "white", "#2166ac"))
 ```
 
     ## Pearson's r and 95% confidence intervals:
