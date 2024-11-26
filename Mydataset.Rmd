@@ -145,18 +145,18 @@ summary(mydataset$EMP_2)
 ```
 
 ```{r}
-mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
+mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "Yes", "No")
 
 mydatasetr <- mydataset %>%
   rename(
-    SWL = SAT,
+    Life_Satisfaction = SAT,
     Happiness = HAPPY_R,
     Employment_Status = Employed,
     Social_Interaction = SOCIAL_R,
     Age = AGE
   )
 
-model<-lm(SWL ~ Social_Interaction + Employment_Status + Age, data = mydatasetr)
+model<-lm(Life_Satisfaction ~ Social_Interaction + Employment_Status + Age, data = mydatasetr)
 
 performance(model)
 
@@ -166,9 +166,9 @@ model_summary(model, show.std = TRUE)
 
 summary(model)
 
-tab_model(model)
+tab_model(model, show.std = TRUE)
 
-plot_model(model,  type ="std",  show.values = TRUE, vline.color = "#1B191999", line.size = 1, dot.size = 2.5, colors = "black", axis.lim = c(-1, 1)) + theme_bruce() 
+plot_model(model,  type ="std",  show.values = TRUE, vline.color = "#1B191999", line.size = 1, dot.size = 2.5, colors = "black", axis.lim = c(-1, 1), value.size = 10) + theme_bruce() + theme(text = element_text(size = 30), axis.title = element_text(size = 20), axis.text = element_text(size = 20))
 
 ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_smooth(method = lm) + theme_bruce()
 
@@ -179,7 +179,7 @@ ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = SAT)) + geom_point() + geom_sm
 ```
 
 ```{r}
-mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "1", "0")
+mydataset$Employed <- ifelse(mydataset$EMP_1 == "(01) Item selected" | mydataset$EMP_2 == "(01) Item selected", "Yes", "No")
 
 model<-lm(Happiness ~ Social_Interaction + Employment_Status + Age, data = mydatasetr)
 
@@ -191,22 +191,19 @@ model_summary(model, show.std = TRUE)
 
 summary(model)
 
-tab_model(model)
+tab_model(model, show.std = TRUE)
 
-plot_model(model,  type ="est",  show.values = TRUE, vline.color = "#1B191999", line.size = 1, dot.size = 2, colors = "black") + theme_bruce()
+plot_model(model,  type ="std",  show.values = TRUE, vline.color = "#1B191999", line.size = 1, dot.size = 2, colors = "black", value.size = 10) + theme_bruce() + theme(text = element_text(size = 40), axis.title = element_text(size = 15), axis.text = element_text(size = 20))
 
 ggplot(mydataset, aes(x = SOCIAL_R, Employed, y = HAPPY_R)) + geom_point() + geom_smooth(method = lm) + theme_bruce()
 ```
 
 ```{r}
 corrdataset <- mydatasetr %>%
-  select(SWL, Happiness, Employment_Status, Social_Interaction, Age) %>% mutate(Employment_Status = as.numeric(Employment_Status))
+  select(Life_Satisfaction, Happiness, Employment_Status, Social_Interaction, Age)
 
-Corr(corrdataset, plot.colors=c("#b2182b", "white", "#2166ac"))
+Corr(corrdataset, plot.colors=c("blue", "grey", "white")) 
 
-corr_matrix <- cor(corrdataset, use = "complete.obs") 
-
-ggcorrplot(corr_matrix, method = "square", colors = c("blue", "grey", "white"), title = "Correlation Plot", lab = TRUE)
 ```
 ```{r}
 
